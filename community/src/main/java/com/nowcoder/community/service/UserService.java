@@ -10,6 +10,7 @@ import com.nowcoder.community.util.MailClient;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.autoconfigure.security.SecurityProperties;
 import org.springframework.stereotype.Service;
 import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.Context;
@@ -168,5 +169,15 @@ public class UserService implements CommunityConstant {
 
     public void logout(String ticket) {
         loginTicketMapper.updateStatus(ticket, 1);
+    }
+
+
+    /**
+     * 根据传入的ticket查询登录凭证
+     * @param ticket
+     * @return
+     */
+    public LoginTicket findLoginTicket(String ticket) {
+        return loginTicketMapper.selectByTicket(ticket);
     }
 }
