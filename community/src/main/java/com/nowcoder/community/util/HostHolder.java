@@ -9,6 +9,9 @@ import org.springframework.stereotype.Component;
 @Component
 public class HostHolder {
 
+    /**
+     * 通过 set方法和 get方法实现线程隔离
+     */
     private ThreadLocal<User> users = new ThreadLocal<>();
 
     public void setUser(User user) {
