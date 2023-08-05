@@ -9,7 +9,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.scheduling.support.SimpleTriggerContext;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -52,6 +51,7 @@ public class UserController {
         return "site/setting";
     }
 
+
     @RequestMapping(path = "/upload", method = RequestMethod.POST)
     public String uploadHeader(MultipartFile headerImage, Model model) {
         // SpringMVC提供的MultipartFile用来接收上传文件
@@ -89,6 +89,7 @@ public class UserController {
         return "redirect:/index";
     }
 
+
     @RequestMapping(path = "/header/{fileName}", method = RequestMethod.GET)
     public void getHeader(@PathVariable("fileName") String fileName, HttpServletResponse response) {
         // 浏览器响应的是一个图片（二进制数据），需要通过流手动通过response向浏览器输出，所以返回值设置为void
@@ -99,14 +100,13 @@ public class UserController {
         // 响应图片
         response.setContentType("/image" + suffix);
 
-        try(
+        try (
                 // 输出流会由SpringMVC关闭
                 ServletOutputStream os = response.getOutputStream();
                 // 输入流由我们自己创建，所以需要由我们手动关闭
                 // 但是在Java7后，将fis变量在try的括号中创建，会在finally中自动关闭
                 FileInputStream fis = new FileInputStream(fileName);
-                )
-        {
+        ) {
             // 输出不能一个一个字节输出，要建立一个缓冲区
             byte[] buffer = new byte[1024];
             int b = 0;
@@ -118,4 +118,36 @@ public class UserController {
         }
     }
 
+
+    @RequestMapping(path = "/updatePassword", method = RequestMethod.POST)
+    public String updatePassword(String oldPassword, String newPassword, Model model) {
+        User user = hostHolder.getUser();
+        String originalPassword = user.getPassword();
+        oldPassword = oldPassword + user.getSalt();
+        // 检查旧密码是否为空
+        if (StringUtils.isBlank(oldPassword)) {
+            model.addAttribute("checkPasswordError", "密码不能为空！");
+            return "site/setting";
+        }
+        // 检查新密码是否为空
+        if (StringUtils.isBlank(newPassword)) {
+            model.addAttribute("checkNewPasswordError", "密码不能为空！");
+            return "site/setting";
+        }
+        // 检查原密码正确性
+        if (!CommunityUtil.md5(oldPassword).equals(originalPassword)) {
+            model.addAttribute("checkPasswordError", "密码不正确，请重新输入密码！");
+            return "site/setting";
+        }
+        // 检查新密码是否和旧密码是否一致
+        if (CommunityUtil.md5(oldPassword).equals(CommunityUtil.md5(newPassword + user.getSalt()))) {
+            model.addAttribute("checkNewPasswordError", "新旧密码不能一致，请重新输入密码！");
+            return "site/setting";
+        }
+
+        // 将新密码存入数据库
+        userService.updatePassword(user.getId(), CommunityUtil.md5(newPassword + user.getSalt()));
+
+        return "redirect:/logout";
+    }
 }
