@@ -6,6 +6,7 @@ import com.nowcoder.community.dao.UserMapper;
 import com.nowcoder.community.entity.DiscussPost;
 import com.nowcoder.community.entity.LoginTicket;
 import com.nowcoder.community.entity.User;
+import com.nowcoder.community.util.SensitiveFilter;
 import org.hibernate.validator.internal.util.StringHelper;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -29,6 +30,9 @@ public class CommunityApplicationTests {
 
     @Autowired
     private LoginTicketMapper loginTicketMapper;
+
+    @Autowired
+    private SensitiveFilter sensitiveFilter;
 
     @Test
     public void testSelectUser() {
@@ -101,6 +105,13 @@ public class CommunityApplicationTests {
     public void testUpdateStatus() {
         String ticket = "hbuvanl";
         loginTicketMapper.updateStatus(ticket, 0);
+    }
+
+    @Test
+    public void testSensitive() {
+        String text = "qu去你妈的芜湖sb。&&&只有我在摇摆";
+        text = sensitiveFilter.filter(text);
+        System.out.println(text);
     }
 
 }
