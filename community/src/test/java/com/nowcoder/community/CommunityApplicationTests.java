@@ -76,7 +76,7 @@ public class CommunityApplicationTests {
     @Test
     public void testSelectPosts() {
         List<DiscussPost> list = discussPostMapper.selectDiscussPosts(149, 0, 10);
-        for(DiscussPost post : list) {
+        for (DiscussPost post : list) {
             System.out.println(post);
         }
 
@@ -90,7 +90,7 @@ public class CommunityApplicationTests {
         loginTicket.setUserId(101);
         loginTicket.setTicket("hbuvanl");
         loginTicket.setStatus(0);
-        loginTicket.setExpired(new Date(System.currentTimeMillis()+ 1000 * 60 * 10));
+        loginTicket.setExpired(new Date(System.currentTimeMillis() + 1000 * 60 * 10));
         loginTicketMapper.insertLoginTicket(loginTicket);
     }
 
@@ -112,6 +112,20 @@ public class CommunityApplicationTests {
         String text = "qu去你妈的芜湖sb。&&&只有我在摇摆";
         text = sensitiveFilter.filter(text);
         System.out.println(text);
+    }
+
+    @Test
+    public void testInsertDiscussPost() {
+        DiscussPost discussPost = new DiscussPost();
+        discussPost.setUserId(199);
+        discussPost.setTitle("testtestInsertDiscussPost");
+        discussPost.setContent("testtestInsertDiscussPost content");
+        discussPost.setType(0);
+        discussPost.setStatus(0);
+        discussPost.setCreateTime(new Date());
+        discussPost.setCommentCount(3);
+        discussPost.setScore(34.56);
+        discussPostMapper.insertDiscussPost(discussPost);
     }
 
 }
