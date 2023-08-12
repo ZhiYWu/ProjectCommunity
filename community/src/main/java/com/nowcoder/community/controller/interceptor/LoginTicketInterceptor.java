@@ -25,7 +25,7 @@ public class LoginTicketInterceptor implements HandlerInterceptor {
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
-        // 从request中获取cookie，选择写一个工具类将其进行封装
+        // 从request中获取 cookie，选择写一个工具类将其进行封装
         String ticket = CookieUtil.getValue(request, "ticket");
         if (ticket != null) {
             // 查询凭证

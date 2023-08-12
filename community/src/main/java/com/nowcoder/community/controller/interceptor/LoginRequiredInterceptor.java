@@ -25,7 +25,7 @@ public class LoginRequiredInterceptor implements HandlerInterceptor {
             // 尝试从拦截到的方法中去取指定的注解
             LoginRequired loginAnnotation = method.getMethodAnnotation(LoginRequired.class);
             if (loginAnnotation != null && hostHolder.getUser() == null) {
-                // 该方法是接口声明的，不能用return去重定向，那么就用 response去重定向
+                // 该方法是接口声明的，不能用 return去重定向，那么就用 response 去重定向
                 response.sendRedirect(request.getContextPath() + "/login");
                 return false;
             }
