@@ -14,7 +14,7 @@ public interface DiscussPostMapper {
      * @param userId 为了实现查询用户自己的所有帖子
      * @param offset 每一页起始行的行号
      * @param limit 每一页最多显示多少条数据
-     * @return
+     * @return 所有符合条件的帖子
      */
     List<DiscussPost> selectDiscussPosts(int userId, int offset, int limit);
 
@@ -26,5 +26,7 @@ public interface DiscussPostMapper {
     int selectDiscussPostRows(@Param("userId") int userId);
 
     int insertDiscussPost(DiscussPost discussPost);
+
+    DiscussPost selectDiscussPostById(int id);
 
 }
