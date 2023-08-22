@@ -6,12 +6,16 @@ package com.nowcoder.community.entity;
    成员方法：获取每页的起始行、获取总页数、获取起始页码、获取终止页码
  */
 public class Page {
+
     // 当前页码
     private int current = 1;
+
     // 显示上限
     private int limit = 10;
+
     // 数据总数（用于计算总页数）
     private int rows;
+
     // 查询路径（用于复用分页链接）
     private String path;
 
@@ -55,10 +59,11 @@ public class Page {
 
     /**
      * 获取当前页的起始行
+     *
      * @return
      */
-    public int getOffset(){
-        return (current  - 1) *limit;
+    public int getOffset() {
+        return (current - 1) * limit;
     }
 
     /**
@@ -75,6 +80,7 @@ public class Page {
 
     /**
      * 获取起始页码
+     *
      * @return
      */
     public int getFrom() {
@@ -84,6 +90,7 @@ public class Page {
 
     /**
      * 获取终止页码
+     *
      * @return
      */
     public int getTo() {
