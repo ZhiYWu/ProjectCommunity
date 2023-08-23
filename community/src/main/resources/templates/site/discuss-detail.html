@@ -145,12 +145,12 @@
 								<!-- 回复 -->
 								<li class="pb-3 pt-3 mb-3 border-bottom" th:each="rvo:${cvo.replys}">
 									<div>
-										<span th:if="rvo.target==null">
-											<b class="text-info" th:utext="rvo.user.username">寒江雪</b>:&nbsp;&nbsp;
+										<span th:if="${rvo.target==null}">
+											<b class="text-info" th:text="${rvo.user.username}">寒江雪</b>:&nbsp;&nbsp;
 										</span>
-										<span th:if="rvo.target!=null">
-											<b class="text-info" th:utext="rvo.target.username">寒江雪</b> 回复
-											<b class="text-info" th:utext="rvo.user.username">寒江雪</b>:&nbsp;&nbsp;
+										<span th:if="${rvo.target!=null}">
+											<b class="text-info" th:text="${rvo.user.username}">sissi</b> 回复
+											<b class="text-info" th:text="${rvo.target.username}">寒江雪</b>:&nbsp;&nbsp;
 										</span>
 										<span th:utext="${rvo.reply.content}">这个是直播时间哈</span>
 									</div>
@@ -161,7 +161,8 @@
 											<li class="d-inline ml-2"><a href="#" class="text-primary">赞(1)</a></li>
 											<li class="d-inline ml-2">|</li>
 											<li class="d-inline ml-2">
-												<a th:href="|#huifu-${rvoStat.count}|" data-toggle="collapse" class="text-primary">回复</a></li>
+												<a th:href="|#huifu-${rvoStat.count}|" data-toggle="collapse"
+												   class="text-primary">回复</a></li>
 										</ul>
 										<div th:id="|huifu-${rvoStat.count}|" class="mt-4 collapse">
 											<form method="post" th:action="@{|/comment/add/${post.id}|}">
