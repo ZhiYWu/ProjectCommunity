@@ -29,6 +29,7 @@ public class HomeController {
     public String getIndexPage(Model model, Page page) {  // 通过model携带数据给模板
         page.setRows(discussPostService.findDiscussPostRows(0));
         page.setPath("/index");
+
         // 方法调用前,SpringMVC会自动实例化Model和Page,并将Page注入Model.（因为model和page都是由DispatchServlet实例化）
         // 所以,在thymeleaf中可以直接访问Page对象中的数据.
 
