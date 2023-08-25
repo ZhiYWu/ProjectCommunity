@@ -26,11 +26,12 @@ public class HomeController {
     private UserService userService;
 
     @RequestMapping(path = "/index", method = RequestMethod.GET)
-    public String getIndexPage(Model model, Page page) {  // 通过 model携带数据给模板
+    public String getIndexPage(Model model, Page page) {  // 通过model携带数据给模板
         page.setRows(discussPostService.findDiscussPostRows(0));
         page.setPath("/index");
-        // 方法调用前,SpringMVC会自动实例化 Model和 Page,并将Page注入 Model.（因为model和 page都是由 DispatchServlet 实例化）
-        // 所以,在 thymeleaf 中可以直接访问 Page 对象中的数据.
+
+        // 方法调用前,SpringMVC会自动实例化Model和Page,并将Page注入Model.（因为model和page都是由DispatchServlet实例化）
+        // 所以,在thymeleaf中可以直接访问Page对象中的数据.
 
         List<DiscussPost> list = discussPostService.findDiscussPosts(0, page.getOffset(), page.getLimit());
         List<Map<String, Object>> discussPosts = new ArrayList<>();
@@ -44,7 +45,7 @@ public class HomeController {
             }
         }
         model.addAttribute("discussPosts", discussPosts);
-        return "/index";  // 返回的这个 String是视图的名字
+        return "/index";  // 返回的这个String是视图的名字
     }
 
 }
