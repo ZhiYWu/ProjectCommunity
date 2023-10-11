@@ -40,7 +40,7 @@ public class RedisKeyUtil {
 
     // 登录凭证
     public static String getTicketKey(String ticket) {
-        return PREFIX_KAPTCHA + SPLIT + ticket;
+        return PREFIX_TICKET + SPLIT + ticket;
     }
 
 }
