@@ -110,11 +110,12 @@ public class SensitiveFilter {
                     sb.append(text.charAt(begin));
                     tempNode = rootNode;
                     begin = ++currPosition;
-                    continue;
                 } else if (tempNode.isKeyWordEnd()) {
                     // 发现敏感词
                     sb.append(REPLACEMENT);
                     begin = ++currPosition;
+                    // 重新指向根节点
+                    tempNode = rootNode;
                 } else {
                     currPosition++;
                 }
