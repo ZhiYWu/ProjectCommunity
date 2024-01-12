@@ -54,6 +54,7 @@ public class MessageController implements CommunityConstant {
                 map.put("letterCount", messageService.findLetterCount(message.getConversationId()));
                 map.put("unreadCount", messageService.findLetterUnreadCount(user.getId(), message.getConversationId()));
                 int targetId = user.getId() == message.getFromId() ? message.getToId() : message.getFromId();
+                map.put("targetId", targetId);
                 map.put("target", userService.findUserById(targetId));
 
                 conversations.add(map);
@@ -140,7 +141,7 @@ public class MessageController implements CommunityConstant {
         return CommunityUtil.getJSONString(0);
     }
 
-
+    // 找出作为接收方的状态为"未读"的消息
     private List<Integer> getLetterIds(List<Message> letterList) {
         List<Integer> ids = new ArrayList<>();
         if (letterList != null) {
