@@ -35,9 +35,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter implements Comm
                         "/comment/add/**",
                         "/letter/**",
                         "/notice/**",
-                        "like",
-                        "follow",
-                        "unfollow"
+                        "/like",
+                        "/follow",
+                        "/unfollow"
                 )
                 .hasAnyAuthority(
                         AUTHORITY_ADMIN,
