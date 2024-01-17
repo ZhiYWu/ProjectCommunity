@@ -1,6 +1,6 @@
 package com.nowcoder.community.config;
 
-import com.nowcoder.community.controller.interceptor.LoginRequiredInterceptor;
+import com.nowcoder.community.controller.interceptor.DataInterceptor;
 import com.nowcoder.community.controller.interceptor.LoginTicketInterceptor;
 import com.nowcoder.community.controller.interceptor.MessageInterceptor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,6 +20,9 @@ public class WebMvcConfig implements WebMvcConfigurer {
     @Autowired
     private MessageInterceptor messageInterceptor;
 
+    @Autowired
+    private DataInterceptor dataInterceptor;
+
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
         // 对所有静态资源不拦截，对所有动态资源都拦截
@@ -30,6 +33,9 @@ public class WebMvcConfig implements WebMvcConfigurer {
 //                .excludePathPatterns("/**/*.css", "/**/*.img", "/**/*.html", "/**/*.jpeg");
 
         registry.addInterceptor(messageInterceptor)
+                .excludePathPatterns("/**/*.css", "/**/*.img", "/**/*.html", "/**/*.jpeg");
+
+        registry.addInterceptor(dataInterceptor)
                 .excludePathPatterns("/**/*.css", "/**/*.img", "/**/*.html", "/**/*.jpeg");
     }
 }
