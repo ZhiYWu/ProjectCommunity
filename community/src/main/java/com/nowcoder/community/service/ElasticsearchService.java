@@ -107,4 +107,9 @@ public class ElasticsearchService {
 
 
     }
+
+    // 将帖子从Elasticsearch服务器中删除
+    public void deleteDiscussPost(int id) {
+        discussRepository.deleteById(id);
+    }
 }
