@@ -16,7 +16,7 @@ public interface DiscussPostMapper {
      * @param limit 每一页最多显示多少条数据
      * @return 所有符合条件的帖子
      */
-    List<DiscussPost> selectDiscussPosts(int userId, int offset, int limit);
+    List<DiscussPost> selectDiscussPosts(int userId, int offset, int limit, int orderMode);
 
     /**
      *
@@ -34,5 +34,7 @@ public interface DiscussPostMapper {
     int updateType(int id, int type);
 
     int updateStatus(int id, int status);
+
+    int updateScore(int id, double score);
 
 }
