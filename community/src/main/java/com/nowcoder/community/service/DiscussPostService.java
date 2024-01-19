@@ -33,10 +33,10 @@ public class DiscussPostService {
         }
         // HtmlUtils.htmlEscape 用于转义HTML标记
         post.setTitle(HtmlUtils.htmlEscape(post.getTitle()));
-        post.setTitle(HtmlUtils.htmlEscape(post.getContent()));
+        post.setContent(HtmlUtils.htmlEscape(post.getContent()));
         // 过滤敏感词
         post.setTitle(sensitiveFilter.filter(post.getTitle()));
-        post.setTitle(sensitiveFilter.filter(post.getContent()));
+        post.setContent(sensitiveFilter.filter(post.getContent()));
 
         return discussPostMapper.insertDiscussPost(post);
     }
