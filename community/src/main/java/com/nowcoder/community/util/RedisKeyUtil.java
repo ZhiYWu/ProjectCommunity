@@ -12,6 +12,8 @@ public class RedisKeyUtil {
     private static final String PREFIX_UV = "uv";
     private static final String PREFIX_DAU = "dau";
     private static final String PREFIX_POST = "post";
+    private static final String PREFIX_POPULAR_POSTS = "popular:posts";
+    private static final String PREFIX_ROWS = "rows";
 
     // 某个实体的赞
     // like:entity:entityType:entityId -> set(userId)
@@ -77,5 +79,14 @@ public class RedisKeyUtil {
         return PREFIX_POST + SPLIT + "score";
     }
 
+    // 热门帖子
+    public static String getPopularPostsKey() {
+        return PREFIX_POPULAR_POSTS;
+    }
+
+    // 热门帖子条数
+    public static String getRowsKey() {
+        return PREFIX_ROWS;
+    }
 
 }

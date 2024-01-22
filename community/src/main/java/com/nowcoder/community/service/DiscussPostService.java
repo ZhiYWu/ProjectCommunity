@@ -1,15 +1,18 @@
 package com.nowcoder.community.service;
 
+import com.alibaba.fastjson.JSONObject;
 import com.github.benmanes.caffeine.cache.CacheLoader;
 import com.github.benmanes.caffeine.cache.Caffeine;
 import com.github.benmanes.caffeine.cache.LoadingCache;
 import com.nowcoder.community.dao.DiscussPostMapper;
 import com.nowcoder.community.entity.DiscussPost;
+import com.nowcoder.community.util.RedisKeyUtil;
 import com.nowcoder.community.util.SensitiveFilter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.web.util.HtmlUtils;
 
@@ -33,6 +36,12 @@ public class DiscussPostService {
 
     @Value("${caffeine.posts.expire-seconds}")
     private int expireSeconds;
+
+    @Value("${spring.redis.expire-seconds}")
+    private int redisExpireSeconds;
+
+    @Autowired
+    private RedisTemplate redisTemplate;
 
     // Caffeine核心接口: Cache, LoadingCache(同步, 一般用这个), AsyncLoadingCache(异步)
     // 帖子列表的缓存
@@ -64,13 +73,27 @@ public class DiscussPostService {
                         int offset = Integer.valueOf(params[0]);
                         int limit = Integer.valueOf(params[1]);
 
-                        // 可以添加二级缓存: Redis -> mysql
-                        // TODO: 2024/1/21 添加二级缓存, 构成多级缓存
+                        // 添加二级缓存: Caffeine -> Redis(二级缓存) -> mysql
+                        // redisKey: popular:posts:offset:limit
+                        String redisKey = RedisKeyUtil.getPopularPostsKey() + ":" + offset + ":" + limit;
+                        Object postsObject = redisTemplate.opsForValue().get(redisKey);
+                        // 如果Redis中包含数据则直接使用
+                        if (postsObject != null) {
+                            logger.debug("load post list from Redis.");
+                            String postsStr = postsObject.toString();
+                            return JSONObject.parseArray(postsStr, DiscussPost.class);
+                        }
 
                         logger.debug("load post list from DB.");
-                        return discussPostMapper.selectDiscussPosts(0, offset, limit, 1);
+                        List<DiscussPost> posts = discussPostMapper.selectDiscussPosts(0, offset, limit, 1);
+                        // 将DB中查询到的数据存入Redis中,方便下次直接调用
+                        redisTemplate.opsForValue().set(redisKey, JSONObject.toJSON(posts));
+                        // 设置过期时间
+                        redisTemplate.expire(redisKey, redisExpireSeconds, TimeUnit.SECONDS);
+                        return posts;
                     }
                 });
+
         // 初始化帖子总数缓存
         postRowsCache = Caffeine.newBuilder()
                 .maximumSize(maxSize)
@@ -78,8 +101,22 @@ public class DiscussPostService {
                 .build(new CacheLoader<Integer, Integer>() {
                     @Override
                     public Integer load(Integer key) throws Exception {
+                        // 添加查询帖子条目数的二级缓存
+                        String redisKey = RedisKeyUtil.getRowsKey() + ":" + key;
+                        Object rowsObject = redisTemplate.opsForValue().get(redisKey);
+                        if (rowsObject != null) {
+                            logger.debug("load rows from Redis.");
+                            String rowsStr = (String) rowsObject;
+                            return Integer.valueOf(rowsStr);
+                        }
+
                         logger.debug("load post rows from DB.");
-                        return discussPostMapper.selectDiscussPostRows(key);
+                        int rows = discussPostMapper.selectDiscussPostRows(key);
+                        // 将DB中查询到的数据存入Redis中,方便下次直接调用
+                        redisTemplate.opsForValue().set(redisKey, rows);
+                        // 设置过期时间
+                        redisTemplate.expire(redisKey, redisExpireSeconds, TimeUnit.SECONDS);
+                        return rows;
                     }
                 });
     }
@@ -94,7 +131,7 @@ public class DiscussPostService {
     }
 
     public int findDiscussPostRows(int userId) {
-        if(userId == 0) {
+        if (userId == 0) {
             return postRowsCache.get(userId);
         }
         logger.debug("load post rows from DB.");
