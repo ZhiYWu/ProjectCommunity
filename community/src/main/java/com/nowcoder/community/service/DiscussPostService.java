@@ -106,7 +106,7 @@ public class DiscussPostService {
                         Object rowsObject = redisTemplate.opsForValue().get(redisKey);
                         if (rowsObject != null) {
                             logger.debug("load rows from Redis.");
-                            String rowsStr = (String) rowsObject;
+                            String rowsStr = rowsObject.toString();
                             return Integer.valueOf(rowsStr);
                         }
 
